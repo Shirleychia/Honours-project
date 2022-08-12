@@ -1,0 +1,194 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+install.packages("readr")
+install.packages("tidyverse")
+install.packages("dplyr")
+install.packages("ggplot")
+install.packages("ggplot2")
+install.packages("innertest")
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(tidyverse)
+```
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code.
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*.
+
+```{r}
+Small <- read.csv("LocationOrders_Small.csv", header=T)
+Big <- read.csv("LocationOrders_Big.csv", header=T)
+Veg <- read.csv("VegData.csv", header=T)
+```
+
+```{r}
+Habitat <- as.factor
+Site <- as.factor
+```
+
+# ANOVA for Total veg
+```{r}
+Total.lm <- lm(Total ~ Habitat + Site, data = Veg)
+summary(Total.lm)
+```
+
+
+```{r}
+hist(Total.lm$residuals)
+plot(Total.lm)
+```
+
+# ANOVA Total Woody cover
+```{r}
+Woody.lm <- lm(Woody ~ Habitat + Site, data = Veg)
+summary(Total.lm)
+```
+
+```{r}
+hist(Woody.lm$residuals)
+plot(Woody.lm)
+```
+
+# ANOVA Total Grass cover
+```{r}
+Grass.lm <- lm(Grass ~ Habitat + Site, data = Veg)
+summary(Total.lm)
+```
+
+```{r}
+hist(Grass.lm$residuals)
+plot(Grass.lm)
+```
+
+# ANOVA on total cover, grass and woody
+
+```{r}
+Total_cover <- lm(Total ~ Grass + Woody + Site, data = Veg)
+summary(Total_cover)
+```
+
+# Total veg boxplot by site
+```{r}
+f<-ggplot(Veg, aes(x = Site, y = Total))+
+            geom_boxplot()+
+            geom_point()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+  
+f
+```
+
+# Total woody boxplot by site
+```{r}
+g<-ggplot(Veg, aes(x = Site, y = Woody))+
+            geom_boxplot()+
+            geom_point()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+g
+```
+
+# Total Grass boxplot by site
+```{r}
+h<-ggplot(Veg, aes(x = Site, y = Grass))+
+            geom_boxplot()+
+            geom_point()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+h
+```
+
+# Scatterplot
+
+```{r}
+Total_Veg <- read.csv("Total_Veg.csv", header=T)
+i <- ggplot(Total_Veg, aes(x=Woody/Grass, y=Total)) + 
+    geom_point()
+
+i
+```
+
+```{r}
+ggplot() + geom_point(data = Total_Veg, aes(x = Total, y = Woody), color = "brown", pch = 2) + 
+  geom_point(data = Total_Veg, aes(x = Total, y = Grass), color = "blue", pch = 1) +
+  theme_bw()
+```
+```{r}
+mean_veg <- read.csv("VegData.csv", header=T)
+ggplot() + geom_point(data = mean_veg, aes(x = Total, y = Woody), color = "brown", pch = 2) + 
+  geom_point(data = Total_Veg, aes(x = Total, y = Grass), color = "blue", pch = 1) +
+  theme_bw()
+
+```
+# Linear model: Total veg and woody
+```{r}
+m1 <- lm(Total ~ Woody, data = Veg)
+summary(m1)
+anova(m1)
+```
+# Linear model: Total and grass
+```{r}
+m2 <- lm(Total ~ Grass, data = Veg)
+summary(m2)
+anova(m2)
+```
+
+```{r}
+m3 <- lm(Total ~ Site, data = Veg)
+summary(m3)
+anova(m3)
+```
+```{r}
+ggplot(m3, aes(x = Site, y = Total))+
+  geom_boxplot()+
+  geom_point()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+```
+
+
+```{r}
+m2 <- ggplot(Veg, aes(x = Site, y = Woody))+
+            geom_boxplot()+
+            geom_point()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+m2
+```
+```{r}
+Total_location <- lm(Total ~ Site, data = Veg)
+summary(Total_location)
+anova(Total_location)
+
+```
+```{r}
+Woody_location <- lm(Woody ~ Site, data = Veg)
+summary(Woody_location)
+anova(Woody_location)
+```
+```{r}
+Grass_location <- lm(Grass ~ Site, data = Veg)
+summary(Grass_location)
+anova(Grass_location)
+```
+```{r}
+Total_habitat <- lm(Total ~ Habitat, data = Veg)
+summary(Total_habitat)
+anova(Total_habitat)
+```
+```{r}
+Woody_habitat <- lm(Woody ~ Habitat, data = Veg)
+summary(Woody_habitat)
+anova(Woody_habitat)
+```
+```{r}
+Grass_habitat <- lm(Grass ~ Habitat, data = Veg)
+summary(Grass_habitat)
+anova(Grass_habitat)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
